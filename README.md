@@ -32,7 +32,7 @@ composer require jxlwqq/tencent-map
 假设你的表中有两个字段`latitude`和`longitude`分别表示纬度和经度，那么在表单中使用如下：
 
 ```php
-$form->tencentMap('latitude', 'longitude', '经纬度选择');
+$form->tencentMap('latitude', 'longitude', '经纬度');
 
 // 设置地图高度
 $form->tencentMap('latitude', 'longitude', '经纬度')->height(500);

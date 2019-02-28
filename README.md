@@ -37,9 +37,11 @@ $form->tencentMap('latitude', 'longitude', '经纬度');
 // 设置地图高度
 $form->tencentMap('latitude', 'longitude', '经纬度')->height(500);
 
+// 设置地图缩放
+$form->tencentMap('latitude', 'longitude', '经纬度')->zoom(13);
+
 // 设置默认值
 $form->tencentMap('latitude', 'longitude', '经纬度')->default(['lat' => 90, 'lng' => 90]);
-
 ```
 
 ## License

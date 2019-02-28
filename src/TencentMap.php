@@ -27,6 +27,11 @@ class TencentMap extends Field
     protected $height = 300;
 
     /**
+     * @var int
+     */
+    protected $zoom = 13;
+
+    /**
      * Get assets required by this field.
      *
      * @return array
@@ -66,6 +71,13 @@ class TencentMap extends Field
         return $this;
     }
 
+    public function zoom($zoom = 13)
+    {
+        $this->zoom = $zoom;
+
+        return $this;
+    }
+
     /**
      * {@inheritdoc}
      *
@@ -73,14 +85,14 @@ class TencentMap extends Field
      */
     public function render()
     {
-        $this->script = $this->applyScript($this->id);
+        $this->script = $this->applyScript($this->id, $this->zoom);
 
         return parent::render()->with(['height' => $this->height]);
 
 
     }
 
-    public function applyScript(array $id)
+    public function applyScript(array $id, int $zoom)
     {
         return <<<EOT
 (function() {
@@ -104,35 +116,33 @@ class TencentMap extends Field
     function init(name) {
         var lat = $('#{$id['lat']}');
         var lng = $('#{$id['lng']}');
-        var center = new qq.maps.LatLng(lat.val() ? lat.val(): 39.916527, lng.val() ? lng.val() : 116.397128);
+        var center = new qq.maps.LatLng(lat.val() ? lat.val() : 39.916527, lng.val() ? lng.val() : 116.397128);
         var container = document.getElementById("map_"+name);
         var map = new qq.maps.Map(container, {
             center: center,
-            zoom: 13
+            zoom: {$zoom}
         });
 
-        if( ! lat.val() || ! lng.val()) {
-            var latlngBounds = new qq.maps.LatLngBounds();
-            //调用Poi检索类
-            searchService = new qq.maps.SearchService({
-                complete : function(results){
-                    var pois = results.detail.pois;
-                    for(var i = 0,l = pois.length;i < l; i++){
-                        var poi = pois[i];
-                        latlngBounds.extend(poi.latLng);
-                        var marker = new qq.maps.Marker({
-                            map:map,
-                            position: poi.latLng
-                        });
+        var latlngBounds = new qq.maps.LatLngBounds();
+        //调用Poi检索类
+        searchService = new qq.maps.SearchService({
+            complete : function(results){
+                var pois = results.detail.pois;
+                for(var i = 0,l = pois.length;i < l; i++){
+                    var poi = pois[i];
+                    latlngBounds.extend(poi.latLng);
+                    var marker = new qq.maps.Marker({
+                        map:map,
+                        position: poi.latLng
+                    });
 
-                        marker.setTitle(i+1);
+                    marker.setTitle(i+1);
 
-                        markers.push(marker);
-                    }
-                    map.fitBounds(latlngBounds);
+                    markers.push(marker);
                 }
-            });
-        }
+                map.fitBounds(latlngBounds);
+            }
+        });
 
         var anchor = new qq.maps.Point(6, 6),
             size = new qq.maps.Size(24, 24),

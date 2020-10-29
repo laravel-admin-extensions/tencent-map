@@ -27,6 +27,8 @@ composer require jxlwqq/tencent-map
     ]
 ```
 
+api_key 在 [腾讯位置服务控制台 -> key管理](https://lbs.qq.com/dev/console/key/manage) 创建。
+
 ## 使用
 
 假设你的表中有两个字段`latitude`和`longitude`分别表示纬度和经度，那么在表单中使用如下：
